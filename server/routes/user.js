@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const User = require('../models/user');
-const { verifyToken, verifyCompany_Role } = require('../middlewares/autenticacion');
+const { verifyToken, verifyCompany_Role } = require('../middlewares/authentication');
 
 const app = express();
 

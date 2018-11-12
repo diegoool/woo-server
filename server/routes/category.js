@@ -1,20 +1,20 @@
 const express = require('express');
 
-let { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
+let { verifyToken, verifyCompany_Role } = require('../middlewares/authentication');
 
 let app = express();
 
-let Categoria = require('../models/categoria');
+let Category = require('../models/category');
 
 // ============================
 // Mostrar todas las categorias
 // ============================
-app.get('/categoria', verificaToken, (req, res) => {
+app.get('/category', verifyToken, (req, res) => {
 
-    Categoria.find({})
-        .sort('descripcion')
-        .populate('usuario', 'nombre email')
-        .exec((err, categorias) => {
+    Category.find({})
+        .sort('description')
+        .populate('createdBy', 'name email')
+        .exec((err, categories) => {
 
             if (err) {
                 return res.status(500).json({
@@ -25,21 +25,21 @@ app.get('/categoria', verificaToken, (req, res) => {
 
             res.json({
                 ok: true,
-                categorias
+                categories
             });
 
         })
 });
 
 // ============================
-// Mostrar una categoria por ID
+// Mostrar una category por ID
 // ============================
-app.get('/categoria/:id', verificaToken, (req, res) => {
-    // Categoria.findById(....);
+app.get('/category/:id', verifyToken, (req, res) => {
+    // Category.findById(....);
 
     let id = req.params.id;
 
-    Categoria.findById(id, (err, categoriaDB) => {
+    Category.findById(id, (err, categoryDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -48,11 +48,11 @@ app.get('/categoria/:id', verificaToken, (req, res) => {
             });
         }
 
-        if (!categoriaDB) {
+        if (!categoryDB) {
             return res.status(500).json({
                 ok: false,
                 err: {
-                    message: 'El ID no es correcto'
+                    message: 'ID is not correct'
                 }
             });
         }
@@ -60,7 +60,7 @@ app.get('/categoria/:id', verificaToken, (req, res) => {
 
         res.json({
             ok: true,
-            categoria: categoriaDB
+            category: categoryDB
         });
 
     });
@@ -69,20 +69,20 @@ app.get('/categoria/:id', verificaToken, (req, res) => {
 });
 
 // ============================
-// Crear nueva categoria
+// Crear nueva category
 // ============================
-app.post('/categoria', verificaToken, (req, res) => {
-    // regresa la nueva categoria
+app.post('/category', verifyToken, (req, res) => {
+    // regresa la nueva category
     // req.usuario._id
     let body = req.body;
 
-    let categoria = new Categoria({
-        descripcion: body.descripcion,
-        usuario: req.usuario._id
+    let category = new Category({
+        description: body.description,
+        createdBy: req.user._id
     });
 
 
-    categoria.save((err, categoriaDB) => {
+    category.save((err, categoryDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -91,7 +91,7 @@ app.post('/categoria', verificaToken, (req, res) => {
             });
         }
 
-        if (!categoriaDB) {
+        if (!categoryDB) {
             return res.status(400).json({
                 ok: false,
                 err
@@ -100,7 +100,7 @@ app.post('/categoria', verificaToken, (req, res) => {
 
         res.json({
             ok: true,
-            categoria: categoriaDB
+            category: categoryDB
         });
 
 
@@ -112,16 +112,16 @@ app.post('/categoria', verificaToken, (req, res) => {
 // ============================
 // Mostrar todas las categorias
 // ============================
-app.put('/categoria/:id', verificaToken, (req, res) => {
+app.put('/category/:id', verifyToken, (req, res) => {
 
     let id = req.params.id;
     let body = req.body;
 
-    let descCategoria = {
-        descripcion: body.descripcion
+    let descriptionCategory = {
+        description: body.description
     };
 
-    Categoria.findByIdAndUpdate(id, descCategoria, { new: true, runValidators: true }, (err, categoriaDB) => {
+    Category.findByIdAndUpdate(id, descriptionCategory, { new: true, runValidators: true }, (err, categoryDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -130,7 +130,7 @@ app.put('/categoria/:id', verificaToken, (req, res) => {
             });
         }
 
-        if (!categoriaDB) {
+        if (!categoryDB) {
             return res.status(400).json({
                 ok: false,
                 err
@@ -139,7 +139,7 @@ app.put('/categoria/:id', verificaToken, (req, res) => {
 
         res.json({
             ok: true,
-            categoria: categoriaDB
+            category: categoryDB
         });
 
     });
@@ -150,12 +150,12 @@ app.put('/categoria/:id', verificaToken, (req, res) => {
 // ============================
 // Mostrar todas las categorias
 // ============================
-app.delete('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
+app.delete('/category/:id', [verifyToken, verifyCompany_Role], (req, res) => {
     // solo un administrador puede borrar categorias
-    // Categoria.findByIdAndRemove
+    // Category.findByIdAndRemove
     let id = req.params.id;
 
-    Categoria.findByIdAndRemove(id, (err, categoriaDB) => {
+    Category.findByIdAndRemove(id, (err, categoryDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -164,18 +164,18 @@ app.delete('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => 
             });
         }
 
-        if (!categoriaDB) {
+        if (!categoryDB) {
             return res.status(400).json({
                 ok: false,
                 err: {
-                    message: 'El id no existe'
+                    message: 'Id no exist'
                 }
             });
         }
 
         res.json({
             ok: true,
-            message: 'Categoria Borrada'
+            message: 'Category Deleted Borrada'
         });
 
     });
