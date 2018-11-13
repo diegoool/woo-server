@@ -139,10 +139,7 @@ app.delete('/user/:id', [verifyToken, verifyCompany_Role], function(req, res) {
 
     });
 
-
-
 });
-
 
 
 module.exports = app;
