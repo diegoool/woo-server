@@ -1,0 +1,6 @@
+export const colors = {
+  WHITE: '#FFFFFF',
+  BACKGROUND_LIGHT: '#F1EFE2',
+  COLOR_CONTRAST: '#F25652',
+  COLOR_TEXT1: '#3E4E59',
+};

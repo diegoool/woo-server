@@ -1,4 +1,10 @@
 
+backend/node_modules/
+client/node_modules/
 
-
-node_modules/
+client/.expo/*
+client/npm-debug.*
+client/*.jks
+client/*.p12
+client/*.key
+client/*.mobileprovision
